@@ -15,7 +15,7 @@ class Manager:
         for student in self.students_list:
             print(student)
             print('-' * 15)
-        print('#' * 50)
+
 
     def search_student(self, **filters):
         results = self.students_list
@@ -31,3 +31,15 @@ class Manager:
                 print(result)
         else:
             print('Student not found')
+
+    def delete_student(self):
+        student_id = input("Enter student ID to delete: ")
+        student = next((s for s in self.students_list if s.student_id == student_id), None)
+        if not student:
+            print('Student not found')
+            return
+        confirmation = input(f"Delete {student.first_name} {student.last_name}? (Y/N): ").upper()
+        if confirmation != 'Y':
+            print("Operation has been cancelled")
+        self.students_list.remove(student)
+        print('Student has been deleted')
