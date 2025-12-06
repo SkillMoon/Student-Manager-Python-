@@ -1,8 +1,8 @@
-from samples import *
+from tests.samples import *
 
 if __name__ == '__main__':
     create_sample()
-    manager.delete_student()
+    manager.add_student()
     manager.show_all_students()
 
 

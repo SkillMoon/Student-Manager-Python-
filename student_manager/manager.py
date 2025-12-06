@@ -1,21 +1,27 @@
 from student_manager.students import Students
 
 class Manager:
-    students_list= list()
+    def __init__(self):
+        self.students_list = list()
+
     def add_student(self):
         student_id = input("Enter Student ID: ")
+        for student in self.students_list:
+            if student.student_id == student_id:
+                print("student id already exists")
+                return
         first_name = input("Enter First Name: ")
         last_name = input("Enter Last Name: ")
         age = input("Enter Age: ")
         class_name = input("Enter Class Name: ")
         grade = input("Enter Grade: ")
         self.students_list.append(Students(student_id, first_name, last_name, age, class_name, grade))
+
     def show_all_students(self):
         print('#' * 20, 'Students', '#' * 20)
         for student in self.students_list:
             print(student)
             print('-' * 15)
-
 
     def search_student(self, **filters):
         results = self.students_list
@@ -43,3 +49,23 @@ class Manager:
             print("Operation has been cancelled")
         self.students_list.remove(student)
         print('Student has been deleted')
+
+    def edit_student(self):
+        student_id = input("Enter student ID to edit: ")
+        student = next((s for s in self.students_list if s.student_id == student_id), None)
+        if not student:
+            print('Student not found')
+            return
+        print(student)
+        print('*leave fields empty if you dont want to change*')
+        updates = {
+            'first_name': input("Enter First Name: ").strip(),
+            'last_name': input("Enter Last Name: ").strip(),
+            'age': input("Enter Age: ").strip(),
+            'class_name': input("Enter Class Name: ").strip(),
+            'grade': input("Enter Grade: ").strip()
+        }
+        for key, value in updates.items():
+            if value:
+                setattr(student, key, value)
+        print('Student successfully has been edited')
