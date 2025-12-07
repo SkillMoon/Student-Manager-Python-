@@ -10,3 +10,13 @@ class Students:
     def __str__(self):
         return (f'std id : {self.student_id}, name : {self.first_name} { self.last_name}'
                 f', class : {self.class_name}, age : {self.age}, grade: {self.grade}')
+
+    def to_dict(self):
+        return {
+            'student_id': self.student_id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'age': self.age,
+            'class_name': self.class_name,
+            'grade': self.grade
+        }

@@ -1,8 +1,10 @@
 from student_manager.students import Students
+from student_manager.csv_handler import CsvHandler
 
 class Manager:
     def __init__(self):
         self.students_list = list()
+        CsvHandler().load_from_csv(Students, self.students_list)
 
     def add_student(self):
         student_id = input("Enter Student ID: ")
@@ -16,6 +18,10 @@ class Manager:
         class_name = input("Enter Class Name: ")
         grade = input("Enter Grade: ")
         self.students_list.append(Students(student_id, first_name, last_name, age, class_name, grade))
+        CsvHandler().save_to_csv(self.students_list)
+        print('Student added successfully')
+
+
 
     def show_all_students(self):
         print('#' * 20, 'Students', '#' * 20)
@@ -48,6 +54,7 @@ class Manager:
         if confirmation != 'Y':
             print("Operation has been cancelled")
         self.students_list.remove(student)
+        CsvHandler().save_to_csv(self.students_list)
         print('Student has been deleted')
 
     def edit_student(self):
@@ -68,4 +75,5 @@ class Manager:
         for key, value in updates.items():
             if value:
                 setattr(student, key, value)
+        CsvHandler().save_to_csv(self.students_list)
         print('Student successfully has been edited')
