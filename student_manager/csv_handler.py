@@ -32,4 +32,4 @@ class CsvHandler:
             writer = DictWriter(csvfile, fieldnames=headers)
             writer.writeheader()
             for student in students_list:
-                writer.writerow(student.to_dict())
+                writer.writerow(student.__dict__)

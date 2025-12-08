@@ -21,8 +21,6 @@ class Manager:
         CsvHandler().save_to_csv(self.students_list)
         print('Student added successfully')
 
-
-
     def show_all_students(self):
         print('#' * 20, 'Students', '#' * 20)
         for student in self.students_list:
