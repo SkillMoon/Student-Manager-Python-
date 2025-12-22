@@ -11,7 +11,7 @@ class CsvHandler:
                 for row in rows:
                     students_list.append(
                     cls(
-                        row['student_id'],
+                        int(row['student_id']),
                         row['first_name'],
                         row['last_name'],
                         row['age'],
@@ -19,7 +19,8 @@ class CsvHandler:
                         row['grade']
                     )
                     )
-        except:
+        except Exception as e:
+            print(e)
             with open('data/students.csv', 'w', newline='') as csvfile:
                 headers = ["student_id", "first_name", "last_name", "age", "class_name", "grade"]
                 writer = DictWriter(csvfile, fieldnames=headers)
