@@ -2,7 +2,7 @@ from wsgiref.validate import validator
 
 from student_manager.students import Students
 from student_manager.csv_handler import CsvHandler
-from student_manager.validator import Validator, ValidatorForEdit, ValidatorForMainFunctions
+from student_manager.validator import Validator, ValidatorWithoutRequiredCondition, IDValidatorForMainFunctions
 
 
 class Manager:
@@ -32,26 +32,52 @@ class Manager:
             print(student)
             print('-' * 15)
 
+    def search_fields(self):
+        fields = {
+            'student_id': ValidatorWithoutRequiredCondition.validate_id(input('Enter Student ID: ')),
+            'first_name': input('Enter First Name: ').lower(),
+            'last_name': input('Enter Last Name: ').lower(),
+            'age__min':input('Enter Minimum Age: '),
+            'age__max': input('Enter Maximum Age: '),
+            'age': input('Enter Age: '),
+            'class_name': input('Enter Class Name: ').lower(),
+            'grade__min': input('Enter Minimum Grade: '),
+            'grade__max': input('Enter Maximum Grade: '),
+            'grade': input('Enter Grade: ')
+        }
+        print('*leave fields empty if you dont want to change*')
+        accepted_fields = dict()
+        for key, value in fields.items():
+            if  value:
+                accepted_fields[key] = value
+        return accepted_fields
 
-    def search_student(self, **filters):
+    def find_students(self, filters):
         results = self.students_list
-        items = []
         for key, value in filters.items():
             if key.endswith('__min'):
                 results = [s for s in results if getattr(s, key[:-5], None) >= value]
             elif key.endswith('__max'):
                 results = [s for s in results if getattr(s, key[:-5], None) <= value]
+            elif key == 'grade':
+                flt_value = float(value)
+                results = [s for s in results if getattr(s, key, None).lower() == str(flt_value).lower()]
+
             else:
-                results = [s for s in results if getattr(s, key, None) == value]
+                try:
+                    results = [s for s in results if getattr(s, key, None).lower() == value]
+                except:
+                    results = [s for s in results if getattr(s, key, None) == value]
         if results:
             for result in results:
-                items.append(result)
-                return items
+                print(result)
         else:
-            return 'Student not found'
+            print('Student not found')
+    def do_search(self):
+        return self.find_students(self.search_fields())
 
     def delete_student(self):
-        student_id = ValidatorForMainFunctions.validate_id(input("Enter student ID to delete: "))
+        student_id = IDValidatorForMainFunctions.validate_id(input("Enter student ID to delete: "))
         student = next((s for s in self.students_list if s.student_id == student_id), None)
         if not student:
             print('Student not found')
@@ -64,7 +90,7 @@ class Manager:
         print('Student has been deleted')
 
     def edit_student(self):
-        student_id = ValidatorForMainFunctions.validate_id(input("Enter student ID to edit: "))
+        student_id = IDValidatorForMainFunctions.validate_id(input("Enter student ID to edit: "))
         student = next((s for s in self.students_list if s.student_id == student_id), None)
         if not student:
             print('Student not found')
@@ -72,11 +98,11 @@ class Manager:
         print(student)
         print('*leave fields empty if you dont want to change*')
         updates = {
-            'first_name': ValidatorForEdit.validate_name(input("Enter First Name: ")),
-            'last_name': ValidatorForEdit.validate_name(input("Enter Last Name: ")),
-            'age': ValidatorForEdit.validate_age(input("Enter Age: ")),
-            'class_name': ValidatorForEdit.validate_class_name(input("Enter Class Name: ")),
-            'grade': ValidatorForEdit.validate_grade(input("Enter Grade: ")),
+            'first_name': ValidatorWithoutRequiredCondition.validate_name(input("Enter First Name: ")),
+            'last_name': ValidatorWithoutRequiredCondition.validate_name(input("Enter Last Name: ")),
+            'age': ValidatorWithoutRequiredCondition.validate_age(input("Enter Age: ")),
+            'class_name': ValidatorWithoutRequiredCondition.validate_class_name(input("Enter Class Name: ")),
+            'grade': ValidatorWithoutRequiredCondition.validate_grade(input("Enter Grade: ")),
         }
         for key, value in updates.items():
                 if value:

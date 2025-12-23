@@ -70,8 +70,15 @@ class Validator:
             exit()
         return grade
 
-#valide values for edit : because in edit variables can be empty
-class ValidatorForEdit():
+#valide values for edit and search : because in edit and search variables can be empty
+class ValidatorWithoutRequiredCondition:
+    @staticmethod
+    def validate_id(student_id):
+        try:
+            student_id = int(student_id)
+        except Exception as e:
+            student_id = str(student_id)
+        return student_id
     @staticmethod
     def validate_name(name):
         name = name.strip()
@@ -94,7 +101,7 @@ class ValidatorForEdit():
                 print("Age is not a number")
                 exit()
             if age not in range(16, 20):
-                print("Age must be between 16 and 19")
+                print("Age is not between 16 and 19")
                 exit()
         return age
     @staticmethod
@@ -111,11 +118,11 @@ class ValidatorForEdit():
                 print("Grade is not a number")
                 exit()
             if grade not in range(0, 21):
-                print("Grade is not between 0 and 20")
+                print("Grades is not between 0 and 20")
                 exit()
         return grade
-#validate student id in main fields(delete,search,edit)
-class ValidatorForMainFunctions():
+#validate student id in main fields(delete,edit)
+class IDValidatorForMainFunctions:
     @staticmethod
     def validate_id(student_id):
         if student_id.strip() == "":
