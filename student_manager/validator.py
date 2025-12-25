@@ -76,7 +76,7 @@ class ValidatorWithoutRequiredCondition:
     def validate_id(student_id):
         try:
             student_id = int(student_id)
-        except Exception as e:
+        except:
             student_id = str(student_id)
         return student_id
     @staticmethod

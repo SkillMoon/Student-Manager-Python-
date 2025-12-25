@@ -2,6 +2,7 @@ from student_manager.manager import Manager
 from student_manager.students import Students
 
 manager = Manager()
+
 def create_sample():
     s1 = Students(
         student_id='12', first_name="John", last_name="Smith", age=18,

@@ -1,14 +1,12 @@
-from wsgiref.validate import validator
-
 from student_manager.students import Students
 from student_manager.csv_handler import CsvHandler
 from student_manager.validator import Validator, ValidatorWithoutRequiredCondition, IDValidatorForMainFunctions
-
 
 class Manager:
     def __init__(self):
         self.students_list = list()
         CsvHandler().load_from_csv(Students, self.students_list)
+
     def add_student(self):
         student_id = input("Enter Student ID: ")
         student_id = Validator.validate_id(student_id, self.students_list)
@@ -25,12 +23,6 @@ class Manager:
         self.students_list.append(Students(student_id, first_name, last_name, age, class_name, grade))
         CsvHandler().save_to_csv(self.students_list)
         print('Student added successfully')
-
-    def show_all_students(self):
-        print('#' * 20, 'Students', '#' * 20)
-        for student in self.students_list:
-            print(student)
-            print('-' * 15)
 
     def search_fields(self):
         fields = {
@@ -56,11 +48,20 @@ class Manager:
         results = self.students_list
         for key, value in filters.items():
             if key.endswith('__min'):
-                results = [s for s in results if getattr(s, key[:-5], None) >= value]
+                if not any(char.isalpha() for char in value):
+                    results = [s for s in results if getattr(s, key[:-5], None) >= value]
+                else:
+                    results = []
             elif key.endswith('__max'):
-                results = [s for s in results if getattr(s, key[:-5], None) <= value]
+                if not any(char.isalpha() for char in value):
+                    results = [s for s in results if getattr(s, key[:-5], None) <= value]
+                else:
+                    results = []
             elif key == 'grade':
-                flt_value = float(value)
+                try:
+                    flt_value = float(value)
+                except:
+                    flt_value = str(value)
                 results = [s for s in results if getattr(s, key, None).lower() == str(flt_value).lower()]
 
             else:
@@ -109,3 +110,40 @@ class Manager:
                     setattr(student, key, value)
         CsvHandler().save_to_csv(self.students_list)
         print('Student successfully has been edited')
+
+    def show_all_students(self):
+        print('#' * 20, 'Students', '#' * 20)
+        for student in self.students_list:
+            print(student)
+            print('-' * 15)
+
+    def number_of_students(self):
+        print("*Total number of students*")
+        print('-' * 15)
+        print(f'\t{len(self.students_list)}')
+        print('-' * 15)
+
+    def avg_grades(self):
+        print('*leave field empty if you want average of all classes*')
+        grades = []
+        class_name = ValidatorWithoutRequiredCondition.validate_class_name(input("Enter Class Name: "))
+        if class_name:
+            for student in self.students_list:
+                if student.class_name == class_name:
+                    grades.append(float(student.grade))
+        else:
+            for student in self.students_list:
+                grades.append(float(student.grade))
+        average = sum(grades) / len(grades)
+        if class_name:print(f'*Average Grade of {class_name} students*')
+        else:print('*Average Grade of all students*')
+        print('-' * 15)
+        print(f'\t{average}')
+        print('-' * 15)
+
+
+
+
+
+
+
