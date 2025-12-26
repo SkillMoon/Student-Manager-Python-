@@ -3,16 +3,16 @@ class Validator:
     def validate_id(student_id, students_list):
         if student_id.strip() == "":
             print("Student ID is required")
-            exit()
+            return
         try:
             student_id = int(student_id)
         except ValueError:
             print("Student ID is not a number")
-            exit()
+            return
         for student in students_list:
             if student.student_id == student_id:
                 print("student id already exists")
-                exit()
+                return
         return student_id
     @staticmethod
     def validate_name(name):
@@ -23,11 +23,11 @@ class Validator:
                      '<','>']
         if not name:
             print("Name is required")
-            exit()
+            return
         for char in ban_chars:
             if char in name:
                 print("cant use numbers and signs in name")
-                exit()
+                return
         return name
 
     @staticmethod
@@ -35,15 +35,15 @@ class Validator:
         age = age.strip()
         if not age:
             print("Age is required")
-            exit()
+            return
         try:
             age = int(age)
         except ValueError:
             print("Age is not a number")
-            exit()
+            return
         if age not in range(16,20):
             print("Age must be between 16 and 19")
-            exit()
+            return
         return age
 
     @staticmethod
@@ -51,7 +51,7 @@ class Validator:
         class_name = class_name.strip().lower()
         if not class_name:
             print("Class name is required")
-            exit()
+            return
         return class_name
 
     @staticmethod
@@ -59,19 +59,20 @@ class Validator:
         grade = grade.strip()
         if not grade:
             print("Grade is required")
-            exit()
+            return
         try:
             grade = float(grade)
         except ValueError:
             print("Grade is not a number")
-            exit()
+            return
         if grade not in range(0,21):
             print("Grade is not between 0 and 20")
-            exit()
+            return
         return grade
 
 #valide values for edit and search : because in edit and search variables can be empty
 class ValidatorWithoutRequiredCondition:
+    errors = []
     @staticmethod
     def validate_id(student_id):
         try:
@@ -88,8 +89,8 @@ class ValidatorWithoutRequiredCondition:
                      '<', '>']
         for char in ban_chars:
             if char in name:
-                print("cant use numbers and signs in name")
-                exit()
+                ValidatorWithoutRequiredCondition.errors.append("cant use numbers and signs in name")
+                name = 'False'
         return name
     @staticmethod
     def validate_age(age):
@@ -98,11 +99,11 @@ class ValidatorWithoutRequiredCondition:
             try:
                 age = int(age)
             except ValueError:
-                print("Age is not a number")
-                exit()
-            if age not in range(16, 20):
-                print("Age is not between 16 and 19")
-                exit()
+                ValidatorWithoutRequiredCondition.errors.append("Age is not a number")
+                age = 'False'
+            if age not in range(16, 20) and age != 'False':
+                ValidatorWithoutRequiredCondition.errors.append("Age is not between 16 and 19")
+                age = 'False'
         return age
     @staticmethod
     def validate_class_name(class_name):
@@ -115,11 +116,11 @@ class ValidatorWithoutRequiredCondition:
             try:
                 grade = float(grade)
             except ValueError:
-                print("Grade is not a number")
-                exit()
-            if grade not in range(0, 21):
-                print("Grades is not between 0 and 20")
-                exit()
+                ValidatorWithoutRequiredCondition.errors.append("Grade is not a number")
+                grade = 'False'
+            if grade not in range(0, 21) and grade != 'False':
+                ValidatorWithoutRequiredCondition.errors.append("Grades is not between 0 and 20")
+                grade = 'False'
         return grade
 #validate student id in main fields(delete,edit)
 class IDValidatorForMainFunctions:
@@ -127,10 +128,10 @@ class IDValidatorForMainFunctions:
     def validate_id(student_id):
         if student_id.strip() == "":
             print("Student ID is required")
-            exit()
+            return
         try:
             student_id = int(student_id)
         except ValueError:
             print("Student ID is not a number")
-            exit()
+            return
         return student_id
