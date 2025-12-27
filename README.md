@@ -12,7 +12,7 @@ CSV storage, validation, and reporting.
 ## Project Structure
 project/
 │
-├── studentS.py        # Student entity
+├── students.py        # Student entity
 ├── manager.py        # CRUD logic
 ├── csv_handler.py    # CSV load/save
 ├── validator.py    # Input validation
